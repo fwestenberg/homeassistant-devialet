@@ -16,8 +16,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.config_entries import ConfigEntry
 
-from homeassistant.components.persistent_notification import DOMAIN as PN_DOMAIN
-
 from .const import (
     DOMAIN,
     DEFAULT_SCAN_INTERVAL,
@@ -276,22 +274,10 @@ class DevialetDevice(MediaPlayerEntity):
                     await self._api.async_set_night_mode(False)
                     await self._api.async_set_equalizer(mode)
 
-    async def async_turn_on(self) -> None:
-        """Turn the media player on."""
-        await self.hass.services.async_call(
-            PN_DOMAIN,
-            "create",
-            service_data={
-                "title": "Devialet turn on",
-                "message": "Please use the physical button to turn the device on",
-            },
-            blocking=False,
-        )
-
     async def async_turn_off(self) -> None:
         """Turn off media player."""
         await self._api.async_turn_off()
 
     async def async_select_source(self, source: str) -> None:
         """Select input source."""
-        # Not available yet?
+        await self._api.async_select_source(source)

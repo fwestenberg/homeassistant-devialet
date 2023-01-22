@@ -39,7 +39,6 @@ For a stereo setup, only one of the speakers need to be configured
   
 ## Known issues:
 - When using Airplay, no media art is available
-- Select source not working
 
 
 ## Screenshots:
