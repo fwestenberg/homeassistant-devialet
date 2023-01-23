@@ -6,18 +6,15 @@
   "codeowners": [
     "@fwestenberg"
   ],
-  "iot_class": "local_polling",
-  "version": "1.3.0",
-  "dependencies": [],
+  "requirements": [
+    "devialet==1.3.1"
+  ],
   "after_dependencies": [
-    "zeroconf",
-    "persistent_notification"
+    "zeroconf"
   ],
   "zeroconf": [
     "_devialet-http._tcp.local."
   ],
-  "requirements": [
-    "aiohttp",
-    "devialet==1.2.0"
-  ]
+  "integration_type": "device",
+  "iot_class": "local_polling"
 }
