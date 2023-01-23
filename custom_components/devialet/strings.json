@@ -3,9 +3,9 @@
         "flow_title": "{title}",
         "step": {
             "user": {
+                "description": "Please enter the host name or IP address of the Devialet device.",
                 "data": {
-                    "host": "Host",
-                    "name": "Name"
+                    "host": "Host"
                 }
             },
             "confirm": {
@@ -13,8 +13,7 @@
             }
         },
         "error": {
-            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-            "unknown": "[%key:common::config_flow::error::unknown%]"
+            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]"
         },
         "abort": {
             "already_configured": "[%key:common::config_flow::abort::already_configured_service%]"

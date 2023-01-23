@@ -1,12 +1,10 @@
 """Constants for the Devialet integration."""
-import logging
 from typing import Final
 
-DEFAULT_NAME: Final = "Devialet"
 DOMAIN: Final = "devialet"
-DEFAULT_SCAN_INTERVAL = 5
+DEFAULT_SCAN_INTERVAL: Final = 5
+MIN_SCAN_INTERVAL: Final = 1
 MANUFACTURER: Final = "Devialet"
-LOGGER = logging.getLogger(__package__)
 
 SOUND_MODES = {
     "Custom": "custom",

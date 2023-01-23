@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any
+import logging
 
 import voluptuous as vol
 
@@ -11,8 +12,10 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.components import zeroconf
 
-from .const import DEFAULT_NAME, DOMAIN, LOGGER
+from .const import DOMAIN
 from devialet.devialet_api import DevialetApi
+
+LOGGER = logging.getLogger(__package__)
 
 
 class DevialetFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -35,27 +38,24 @@ class DevialetFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             session = async_get_clientsession(self.hass)
-            api = DevialetApi(user_input[CONF_HOST], session)
+            self._host = user_input[CONF_HOST]
+            client = DevialetApi(self._host, session)
 
-            if not await api.async_update() or api.serial is None:
+            if not await client.async_update() or client.serial is None:
                 errors["base"] = "cannot_connect"
                 LOGGER.error("Cannot connect")
             else:
-                await self.async_set_unique_id(api.serial)
+                await self.async_set_unique_id(client.serial)
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(
-                    title=user_input[CONF_HOST], data=user_input
+                    title=client.device_name,
+                    data={CONF_HOST: self._host, CONF_NAME: client.device_name},
                 )
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST): str,
-                    vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
-                }
-            ),
+            data_schema=vol.Schema({vol.Required(CONF_HOST): str}),
             errors=errors,
         )
 
@@ -89,7 +89,7 @@ class DevialetFlowHandler(ConfigFlow, domain=DOMAIN):
 
             if not await api.async_update():
                 errors["base"] = "cannot_connect"
-                LOGGER.error("Cannot connect")
+                # LOGGER.error("Cannot connect")
             else:
                 return self.async_create_entry(
                     title=title,
