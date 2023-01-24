@@ -1,19 +1,19 @@
 """Support for Devialet Phantom speakers."""
 from __future__ import annotations
 
-from typing import Any
 import logging
+from typing import Any
 
+from devialet.devialet_api import DevialetApi
 import voluptuous as vol
 
+from homeassistant.components import zeroconf
 from homeassistant.config_entries import ConfigFlow
+from homeassistant.const import CONF_HOST, CONF_NAME
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.const import CONF_HOST, CONF_NAME
-from homeassistant.components import zeroconf
 
 from .const import DOMAIN
-from devialet.devialet_api import DevialetApi
 
 LOGGER = logging.getLogger(__package__)
 
@@ -89,7 +89,7 @@ class DevialetFlowHandler(ConfigFlow, domain=DOMAIN):
 
             if not await api.async_update():
                 errors["base"] = "cannot_connect"
-                # LOGGER.error("Cannot connect")
+                LOGGER.error("Cannot connect")
             else:
                 return self.async_create_entry(
                     title=title,

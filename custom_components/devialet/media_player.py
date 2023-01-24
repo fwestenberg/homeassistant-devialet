@@ -1,24 +1,24 @@
 """Support for Devialet Phantom speakers."""
 from __future__ import annotations
-from datetime import timedelta
 
 import datetime
+from datetime import timedelta
+
+from devialet import DevialetApi
+from devialet.const import NORMAL_INPUTS
 
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
     MediaPlayerEntityFeature,
     MediaPlayerState,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, MANUFACTURER, SOUND_MODES
-
-from devialet.const import NORMAL_INPUTS
-from devialet import DevialetApi
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN, MANUFACTURER, SOUND_MODES
 
 SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
 
@@ -59,8 +59,9 @@ class DevialetDevice(MediaPlayerEntity):
         """Initialize the Devialet device."""
         self._client = client
         self._name = entry.data[CONF_NAME]
-        self._serial = entry.unique_id
         self._muted = False
+        if entry.unique_id:
+            self._serial = entry.unique_id
 
     async def async_update(self) -> None:
         """Get the latest details from the device."""
@@ -197,6 +198,7 @@ class DevialetDevice(MediaPlayerEntity):
         for pretty_name, name in NORMAL_INPUTS.items():
             if source == name:
                 return pretty_name
+        return None
 
     @property
     def sound_mode(self) -> str | None:
@@ -211,6 +213,7 @@ class DevialetDevice(MediaPlayerEntity):
         for pretty_name, mode in SOUND_MODES.items():
             if sound_mode == mode:
                 return pretty_name
+        return None
 
     async def async_volume_up(self) -> None:
         """Volume up media player."""
